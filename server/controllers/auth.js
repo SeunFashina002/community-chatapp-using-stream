@@ -1,7 +1,7 @@
 const { connect } = require('getstream');
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
 const StreamChat = require('stream-chat').StreamChat;
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 
 require('dotenv').config();
 
@@ -11,17 +11,17 @@ const app_id = process.env.STREAM_APP_ID;
 
 const signup = async (req, res) => {
     try {
-        const { fullName, username, password, phoneNumber } = req.body;
+        const { fullName, username, password} = req.body;
 
         const userId = crypto.randomBytes(16).toString('hex');
 
         const serverClient = connect(api_key, api_secret, app_id);
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcryptjs.hash(password, 10);
 
         const token = serverClient.createUserToken(userId);
 
-        res.status(200).json({ token, fullName, username, userId, hashedPassword, phoneNumber });
+        res.status(200).json({ token, fullName, username, userId, hashedPassword});
     } catch (error) {
         console.log(error);
 
@@ -40,7 +40,7 @@ const login = async (req, res) => {
 
         if(!users.length) return res.status(400).json({ message: 'User not found' });
 
-        const success = await bcrypt.compare(password, users[0].hashedPassword);
+        const success = await bcryptjs.compare(password, users[0].hashedPassword);
 
         const token = serverClient.createUserToken(users[0].id);
 
