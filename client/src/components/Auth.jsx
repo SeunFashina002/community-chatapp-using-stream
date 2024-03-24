@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import Cookies from "universal-cookie";
 import axios from "axios";
-
-import signinImage from "../assets/signup.jpg";
-
 const cookies = new Cookies();
 
 const initialState = {
@@ -25,8 +22,8 @@ const Auth = () => {
 
     const { username, password } = form;
 
-    const URL = "http://localhost:5000/auth";
-    // const URL = 'https://community-chatapp-using-stream.onrender.com/auth';
+    // const URL = "http://localhost:5000/auth";
+    const URL = 'https://community-chatapp-using-stream.onrender.com/auth';
 
     const {
       data: { token, userId, hashedPassword, fullName },
