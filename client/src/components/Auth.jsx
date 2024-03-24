@@ -54,8 +54,8 @@ const Auth = () => {
 
   return (
     <div className="auth__form-container">
-      <div className="auth__form-container_fields">
-        <div className="auth__form-container_fields-content">
+      <div className="auth__form-container_fields justify-center items-center p-3 md:p-6 bg-[#111827]">
+        <div className="auth__form-container_fields-content w-full md:w-1/2 ">
           <p>{isSignup ? "Sign Up" : "Sign In"}</p>
           <form onSubmit={handleSubmit}>
             {isSignup && (
@@ -104,9 +104,6 @@ const Auth = () => {
             </p>
           </div>
         </div>
-      </div>
-      <div className="auth__form-container_image">
-        <img src={signinImage} alt="sign in" />
       </div>
     </div>
   );
