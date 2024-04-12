@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "universal-cookie";
 import axios from "axios";
 const cookies = new Cookies();
@@ -6,24 +6,27 @@ const cookies = new Cookies();
 const initialState = {
   fullName: "",
   username: "",
-  password: ""
+  password: "",
 };
 
 const Auth = () => {
   const [form, setForm] = useState(initialState);
   const [isSignup, setIsSignup] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true)
 
     const { username, password } = form;
 
     // const URL = "http://localhost:5000/auth";
-    const URL = 'https://community-chatapp-using-stream.onrender.com/auth';
+    const URL = "https://community-chatapp-using-stream.onrender.com/auth";
 
     const {
       data: { token, userId, hashedPassword, fullName },
@@ -43,7 +46,12 @@ const Auth = () => {
     }
 
     window.location.reload();
+    setIsSubmitting(false);
   };
+  useEffect(() => {
+    console.log(isSubmitting);
+    
+  }, [isSubmitting]);
 
   const switchMode = () => {
     setIsSignup((prevIsSignup) => !prevIsSignup);
@@ -89,7 +97,14 @@ const Auth = () => {
               />
             </div>
             <div className="auth__form-container_fields-content_button">
-              <button>{isSignup ? "Sign Up" : "Sign In"}</button>
+              <button
+                className={`p-3 outline-none text-white font-semibold  bg-blue-800 rounded-md ${
+                  isSubmitting ? "cursor-not-allowed bg-gray-500" : ""
+                }`}
+                disabled={isSubmitting}
+              >
+                {isSignup ? "Sign Up" : "Sign In"}
+              </button>
             </div>
           </form>
           <div className="auth__form-container_fields-account">
