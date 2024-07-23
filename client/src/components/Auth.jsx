@@ -13,44 +13,52 @@ const Auth = () => {
   const [form, setForm] = useState(initialState);
   const [isSignup, setIsSignup] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true)
+    setIsSubmitting(true);
+    setError(""); // Reset error state
 
     const { username, password } = form;
+    const URL = "http://localhost:5000/auth";
+    // const URL = "https://community-chatapp-using-stream.onrender.com/auth";
 
-    // const URL = "http://localhost:5000/auth";
-    const URL = "https://community-chatapp-using-stream.onrender.com/auth";
+    try {
+      const {
+        data: { token, userId, hashedPassword, fullName },
+      } = await axios.post(`${URL}/${isSignup ? "signup" : "login"}`, {
+        username,
+        password,
+        fullName: form.fullName,
+      });
 
-    const {
-      data: { token, userId, hashedPassword, fullName },
-    } = await axios.post(`${URL}/${isSignup ? "signup" : "login"}`, {
-      username,
-      password,
-      fullName: form.fullName,
-    });
+      cookies.set("token", token);
+      cookies.set("username", username);
+      cookies.set("fullName", fullName);
+      cookies.set("userId", userId);
 
-    cookies.set("token", token);
-    cookies.set("username", username);
-    cookies.set("fullName", fullName);
-    cookies.set("userId", userId);
+      if (isSignup) {
+        cookies.set("hashedPassword", hashedPassword);
+      }
 
-    if (isSignup) {
-      cookies.set("hashedPassword", hashedPassword);
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+      setError(
+        error.response ? error.response.data.message : "An error occurred"
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    window.location.reload();
-    setIsSubmitting(false);
   };
+
   useEffect(() => {
     console.log(isSubmitting);
-    
   }, [isSubmitting]);
 
   const switchMode = () => {
@@ -60,6 +68,7 @@ const Auth = () => {
   return (
     <div className="auth__form-container">
       <div className="auth__form-container_fields justify-center items-center p-3 md:p-6 bg-[#111827]">
+        {error && <p className="error-message text-sm">{error}</p>}
         <div className="auth__form-container_fields-content w-full md:w-1/2 ">
           <p>{isSignup ? "Sign Up" : "Sign In"}</p>
           <form onSubmit={handleSubmit}>
