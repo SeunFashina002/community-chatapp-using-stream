@@ -25,8 +25,8 @@ const Auth = () => {
     setError(""); // Reset error state
 
     const { username, password } = form;
-    const URL = "http://localhost:5000/auth";
-    // const URL = "https://community-chatapp-using-stream.onrender.com/auth";
+    // const URL = "http://localhost:5000/auth";
+    const URL = "https://community-chatapp-using-stream.onrender.com/auth";
 
     try {
       const {
